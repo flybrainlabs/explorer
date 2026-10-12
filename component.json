@@ -1,7 +1,7 @@
 {
   "schema": "flybrain-component-v1",
   "repository": "explorer",
-  "owner": "flybrainwork",
+  "owner": "flybrainlabs",
   "workspaceFiles": {
     "config/explorer-source-v1.sql": "config/explorer-source-v1.sql",
     "config/explorer-v1.sql": "config/explorer-v1.sql",
@@ -28,5 +28,6 @@
     "web/explorer.js": "web/explorer.js",
     "web/pages/block.html": "web/pages/block.html",
     "web/pages/explorer.html": "web/pages/explorer.html"
-  }
+  },
+  "project": "flybrainlabs"
 }
