@@ -1,0 +1,32 @@
+{
+  "schema": "flybrain-component-v1",
+  "repository": "explorer",
+  "owner": "flybrainwork",
+  "workspaceFiles": {
+    "config/explorer-source-v1.sql": "config/explorer-source-v1.sql",
+    "config/explorer-v1.sql": "config/explorer-v1.sql",
+    "src/bin/flypow_explorer_indexer.rs": "src/bin/flypow_explorer_indexer.rs",
+    "src/bin/flypow_explorer_query.rs": "src/bin/flypow_explorer_query.rs",
+    "src/explorer.rs": "src/explorer.rs",
+    "src/explorer_projection.rs": "src/explorer_projection.rs",
+    "src/explorer_types.rs": "src/explorer_types.rs",
+    "tests/explorer.rs": "tests/explorer.rs",
+    "tests/explorer_browser.py": "tests/explorer_browser.py",
+    "tests/explorer_chain_faults.mjs": "tests/explorer_chain_faults.mjs",
+    "tests/explorer_pressure.py": "tests/explorer_pressure.py",
+    "tools/build_explorer_pages.py": "tools/build_explorer_pages.py",
+    "tools/check_explorer_rebuild.py": "tools/check_explorer_rebuild.py",
+    "tools/explorer_chain_indexer.mjs": "tools/explorer_chain_indexer.mjs",
+    "tools/explorer_isolated_followup.mjs": "tools/explorer_isolated_followup.mjs",
+    "tools/explorer_node_snapshot.py": "tools/explorer_node_snapshot.py",
+    "tools/rebuild_index.mjs": "tools/rebuild_index.mjs",
+    "tools/upgrade_explorer_node.sh": "tools/upgrade_explorer_node.sh",
+    "web/explorer-app.mjs": "web/explorer-app.mjs",
+    "web/explorer-client.mjs": "web/explorer-client.mjs",
+    "web/explorer-format.mjs": "web/explorer-format.mjs",
+    "web/explorer.css": "web/explorer.css",
+    "web/explorer.js": "web/explorer.js",
+    "web/pages/block.html": "web/pages/block.html",
+    "web/pages/explorer.html": "web/pages/explorer.html"
+  }
+}

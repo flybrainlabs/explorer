@@ -1,0 +1,28 @@
+-- Additive source migration; frozen descriptors, events, receipts and identities remain unchanged.
+CREATE INDEX IF NOT EXISTS candidate_reveal_expiry ON candidate_claims(status,reveal_deadline);
+CREATE INDEX IF NOT EXISTS candidate_verify_expiry ON candidate_claims(status,verification_deadline);
+CREATE INDEX IF NOT EXISTS contribution_owner_history ON science_contributions(actor,created_at,id);
+CREATE TABLE IF NOT EXISTS candidate_terminal(claim_id TEXT PRIMARY KEY,reason TEXT NOT NULL,at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS goal_schedule(campaign_id TEXT NOT NULL,goal_id TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,eligible_at INTEGER NOT NULL DEFAULT 0,last_reason TEXT,policy_version TEXT NOT NULL,PRIMARY KEY(campaign_id,goal_id));
+CREATE TABLE IF NOT EXISTS artifact_lifecycle(upload_id TEXT PRIMARY KEY,lifecycle TEXT NOT NULL,physical_bytes INTEGER NOT NULL DEFAULT 0,temp_bytes INTEGER NOT NULL DEFAULT 0,checked_at INTEGER NOT NULL,cleanup_started_at INTEGER,cleaned_at INTEGER);
+CREATE TABLE IF NOT EXISTS public_objects(sha256 TEXT PRIMARY KEY,bytes INTEGER NOT NULL,checked_at INTEGER NOT NULL,mtime_ns TEXT NOT NULL,inode TEXT NOT NULL,status TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS public_file_objects(result_id TEXT NOT NULL,name TEXT NOT NULL,sha256 TEXT NOT NULL,PRIMARY KEY(result_id,name));
+CREATE TABLE IF NOT EXISTS result_neurons(result_id TEXT NOT NULL,body_id TEXT NOT NULL,role TEXT NOT NULL,PRIMARY KEY(result_id,body_id,role));
+CREATE INDEX IF NOT EXISTS result_neuron_lookup ON result_neurons(body_id,role,result_id);
+CREATE TABLE IF NOT EXISTS publication_links(result_id TEXT PRIMARY KEY,publication_type TEXT NOT NULL,round_id TEXT,claim_id TEXT,contribution_id TEXT,acceptance_id TEXT,statement TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS evidence_manifests(root TEXT PRIMARY KEY,manifest TEXT NOT NULL,signature TEXT NOT NULL,created_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS economic_observations(id TEXT PRIMARY KEY,event_id TEXT NOT NULL,envelope TEXT NOT NULL,observer_policy TEXT NOT NULL,message_hex TEXT NOT NULL,observed_at INTEGER NOT NULL,received_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS economic_source_locations(source_key TEXT PRIMARY KEY,event_id TEXT NOT NULL,immutable_root TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS economic_business_operations(operation_key TEXT PRIMARY KEY,event_id TEXT NOT NULL,immutable_root TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS economic_quarantine(event_id TEXT PRIMARY KEY,code TEXT NOT NULL,envelope TEXT NOT NULL,at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS chain_reconciliations(id TEXT PRIMARY KEY,asset TEXT NOT NULL,report TEXT NOT NULL,created_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS private_deliveries(request_id TEXT PRIMARY KEY,manifest TEXT NOT NULL,manifest_root TEXT NOT NULL,signature TEXT NOT NULL,created_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS private_delivery_events(sequence INTEGER PRIMARY KEY AUTOINCREMENT,request_id TEXT NOT NULL,kind TEXT NOT NULL,manifest_root TEXT NOT NULL,created_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS explorer_source_migrations(version INTEGER PRIMARY KEY,at INTEGER NOT NULL,source_schema TEXT NOT NULL);
+INSERT OR IGNORE INTO explorer_source_migrations VALUES(1,unixepoch(),'additive-explorer-source-v1');
+CREATE TABLE IF NOT EXISTS candidate_admission_sources(claim_id TEXT PRIMARY KEY,source_hash TEXT NOT NULL,accepted_at INTEGER NOT NULL);
+CREATE INDEX IF NOT EXISTS candidate_source_budget ON candidate_admission_sources(source_hash,accepted_at);
+CREATE TABLE IF NOT EXISTS public_verification_declarations(claim_id TEXT NOT NULL,verifier_id TEXT NOT NULL,source_hash TEXT NOT NULL,declaration TEXT NOT NULL,created_at INTEGER NOT NULL,PRIMARY KEY(claim_id,verifier_id));
+CREATE TABLE IF NOT EXISTS economic_book_migrations(asset TEXT PRIMARY KEY,prior_state_hash TEXT NOT NULL,new_state_hash TEXT NOT NULL,payment_count INTEGER NOT NULL,at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS private_evidence_commitments(root TEXT PRIMARY KEY,binding_json TEXT NOT NULL,created_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS result_response_indexes(result_id TEXT PRIMARY KEY,source_root TEXT NOT NULL,neuron_count INTEGER NOT NULL,at INTEGER NOT NULL);

@@ -1,0 +1,15 @@
+PRAGMA journal_mode=WAL;
+PRAGMA foreign_keys=ON;
+CREATE TABLE IF NOT EXISTS explorer_meta(key TEXT PRIMARY KEY,value TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS explorer_checkpoints(source TEXT PRIMARY KEY,sequence INTEGER NOT NULL,updated_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS explorer_objects(namespace TEXT NOT NULL,object_type TEXT NOT NULL,id TEXT NOT NULL,sequence INTEGER NOT NULL,at INTEGER NOT NULL,goal_id TEXT NOT NULL DEFAULT '',model_root TEXT NOT NULL DEFAULT '',actor TEXT NOT NULL DEFAULT '',status TEXT NOT NULL,document TEXT NOT NULL,PRIMARY KEY(namespace,object_type,id));
+CREATE INDEX IF NOT EXISTS explorer_page ON explorer_objects(object_type,sequence DESC,id DESC);
+CREATE INDEX IF NOT EXISTS explorer_filter ON explorer_objects(object_type,goal_id,model_root,actor,status,sequence DESC,id DESC);
+CREATE TABLE IF NOT EXISTS explorer_aliases(alias TEXT NOT NULL,namespace TEXT NOT NULL,object_type TEXT NOT NULL,id TEXT NOT NULL,PRIMARY KEY(alias,namespace,object_type,id));
+CREATE TABLE IF NOT EXISTS explorer_events(sequence INTEGER PRIMARY KEY AUTOINCREMENT,source TEXT NOT NULL,source_sequence TEXT NOT NULL,payload TEXT NOT NULL,UNIQUE(source,source_sequence));
+CREATE TABLE IF NOT EXISTS explorer_chain_sources(namespace TEXT PRIMARY KEY,genesis TEXT NOT NULL,configuration TEXT NOT NULL,state TEXT NOT NULL,updated_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS explorer_chain_observations(namespace TEXT NOT NULL,source_id TEXT NOT NULL,observation_id TEXT NOT NULL,document TEXT NOT NULL,PRIMARY KEY(namespace,source_id,observation_id));
+CREATE TABLE IF NOT EXISTS explorer_chain_checkpoints(namespace TEXT NOT NULL,source TEXT NOT NULL,cursor TEXT NOT NULL,updated_at INTEGER NOT NULL,PRIMARY KEY(namespace,source));
+CREATE TABLE IF NOT EXISTS explorer_rebuilds(id TEXT PRIMARY KEY,version TEXT NOT NULL,started_at INTEGER NOT NULL,finished_at INTEGER,source_digest TEXT,status TEXT NOT NULL);
+CREATE VIRTUAL TABLE IF NOT EXISTS explorer_text USING fts5(namespace UNINDEXED,object_type UNINDEXED,id UNINDEXED,content,tokenize='trigram');
+CREATE TABLE IF NOT EXISTS explorer_text_links(namespace TEXT NOT NULL,object_type TEXT NOT NULL,id TEXT NOT NULL,text_rowid INTEGER NOT NULL,PRIMARY KEY(namespace,object_type,id));
